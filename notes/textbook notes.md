@@ -26,6 +26,18 @@
     - [`insert`](#insert)
     - [`remove`](#remove)
     - [Destructor and Copy Constructor](#destructor-and-copy-constructor)
+  - [4.4 AVL Trees](#44-avl-trees)
+    - [Single Rotation](#single-rotation)
+    - [Double Rotation](#double-rotation)
+  - [Summary](#summary)
+  - [Implementations:](#implementations)
+    - [Node Decleration for AVL Trees](#node-decleration-for-avl-trees)
+    - [Function to compute height of an AVL node](#function-to-compute-height-of-an-avl-node)
+    - [Insert into AVL tree method](#insert-into-avl-tree-method)
+    - [balance method](#balance-method)
+    - [Single Rotation left-left](#single-rotation-left-left)
+    - [Double Rotation left-right](#double-rotation-left-right)
+    - [Delete method](#delete-method)
 
 
 # Chapter 3: Lists, Stacks, and Queues
@@ -282,3 +294,208 @@ Because the smallest node in the right subtree cannot have a left child, the sec
 - Constructor
     - ![](img/2021-10-12-18-28-58.png)
 
+## 4.4 AVL Trees
+**Definition:** An AVL Tree is idential to a BST, except that for every node in the tree, the height of the left and right subtrees can differ by at most 1. (The hegith of an empty tree is defined to be -1.)
+- It's a BST with a **balacning conditon** which ensures that the depth of the tree is $O(logN)$
+- Another balacing condtion would insist that every node must have left and right sub-trees of the same height. IF the ehgith of an empty subtree is defnied to be -1, then only perfectly balances tree of $2^k - 1$ nodes would satisfy this crietion.
+- The minimum number of nodes, $S(h)$, in an AVL tree of height $h$ is given by $S(h) = S(h-1) + S(h - 2) + 1$ for $h =0, S(h) = 1$. For $h = 1, S(h) = 2$
+- All tree opertaions can be preformed in O(logN) time, except possibly insertion and deletion.
+
+![](img/2021-10-23-13-20-05.png)
+
+Suppose node $\alpha$ needs a rebalanced. Since $\alpha$ has a height imbalance, it requires that $\alpha$'s two subtrees' heights differ by two.\
+**A violation might occur in four cases.**
+1. An insertion into the left subtree of the left child of $\alpha$
+2. an insertion into the right subtree of the left child of $\alpha$
+3. an insertion into the left subtree of the right child of $\alpha$
+4. an insertion into the right subtree of the right child of $\alpha$
+  
+Case 1 and 3 are mirrior images symmetries with respect to $\alpha$, this is fixed by a **single rotation**\
+Case 2 and 3 are also mirrior image symmetries with respect to $\alpha$,
+this is fixed by a **double rotation**
+### Single Rotation
+Before picture on the left, after picture on the right.
+- Node $k_2$ violates the avl balance property because its left subtree is two level deeper than it's right subtree.
+- To ideally rebalance the tree, we would live to move X up a level and Z down a level.  note this is actually more than the AVL property would require.
+- We need to remember that the rest of the tree has to be informed of this change. Here this means the root is updated to be $k_1$, $k_2$ right child must be reset to link to Y instead of $k_1$ and etc.
+- Note that the new height of the tree is exactly the same as the height of the original subtree prior to the insertion that caused X to grow.
+![](img/2021-10-23-13-29-01.png)
+
+### Double Rotation
+The fact that subtree Y has an item inserted into it guarantees that it is nonempty. Thus, we may assume that it has a root and two subtrees. As the diagram below shoes, exactly one of tree B or C is two level deeper than D. But we cannot be sure which one it is.
+- Turns out it does not matter.
+- To fix the imbalance, we take the root of the tree Y which is causing the imbalance and place that as the new node where the imbalance is. Leaving it's children behind and giving them to $k_1$ and $k_3$
+- The new left and right child's of $k_2$ is $k_1$ and $k_3$ respectively.
+  - **As we can see, it restores the height what it was before the insertion**
+    - ![](img/2021-10-23-14-16-59.png)
+
+**More Examples:**
+- right-left double rotation
+  - insertion of 15 causes height imbalance at node 7.
+    - ![](img/2021-10-23-14-22-24.png)
+
+\
+.
+- right-left double rotation
+  - insertion of 14 causes height imbalance at node 6.
+    - ![](img/2021-10-23-14-22-53.png)
+
+\
+.
+- right-right **single rotation**
+  - insertion of 13 causes imbalance at the root 4.
+
+    - ![](img/2021-10-23-14-29-31.png)
+
+\
+.
+- left-left **single rotation**
+  - insertion of 12 causes imbalance at node 14.
+    - ![](img/2021-10-23-14-31-38.png)
+
+\
+- .
+  - left-right double rotation
+    - insertion of 9, (becomes the right child of 8) causes imbalance at node 10
+      - ![](img/2021-10-23-14-33-05.png)  
+      - ![](img/2021-10-23-14-33-20.png)
+
+## Summary
+To insert a new node with item $X$ into an AVL tree $T$, we recursively inert $X$ into the appropriate subtree of $T$ (let us cal this $T_{LR}$). if the height of $T_{LR}$ does not change, then we are done. Otherwise, if a height imbalance apprears in $T$, we do the appropriate single or double rotation depending on $X$ and the items in $T$ and $T_{LR}$, update the heights, and we are done.
+
+
+## Implementations:
+### Node Decleration for AVL Trees
+```cpp
+struct AvlNode {
+Comparable element;
+AvlNode *left;
+AvlNode *right;
+int height;
+
+AvlNode( const Comparable & ele, AvlNode *lt, AvlNode *rt, int h = 0 )
+: element{ ele }, left{ lt }, right{ rt }, height{ h } { }
+
+ AvlNode( Comparable && ele, AvlNode *lt, AvlNode *rt, int h = 0 )
+ : element{ std::move( ele ) }, left{ lt }, right{ rt }, height{ h } { }
+ };
+```
+
+### Function to compute height of an AVL node
+```cpp
+ /**
+ * Return the height of node t or -1 if nullptr. 3 */
+
+ int height( AvlNode *t ) const {
+ return t == nullptr ? -1 : t->height;
+ }
+```
+
+### Insert into AVL tree method
+```cpp
+ /**
+ * Internal method to insert into a subtree.
+ * x is the item to insert.
+ * t is the node that roots the subtree.
+ * Set the new root of the subtree.
+ */
+ void insert( const Comparable & x, AvlNode * & t ) { 
+    if( t == nullptr )
+        t = new AvlNode{ x, nullptr, nullptr };
+    else if( x < t->element )
+        insert( x, t->left );
+    else if( t->element < x )
+        insert( x, t->right );
+
+    balance( t );
+  }
+```
+
+### balance method
+```cpp
+static const int ALLOWED_IMBALANCE = 1;
+// Assume t is balanced or within one of being balanced
+void balance( AvlNode * & t ) {
+  if( t == nullptr )
+    return;
+
+  if( height( t->left ) - height(t->right) > ALLOWED_IMBALANCE ) {
+    if( height( t->left->left ) >= height( t->left->right ) ) {
+      rotateWithLeftChild( t );
+    } else {
+      doubleWithLeftChild( t );
+    }
+  } else {
+    if( height( t->right ) - height( t->left ) > ALLOWED_IMBALANCE ) {
+      if( height( t->right->right ) >= height( t->right->left ) ) {
+        rotateWithRightChild( t );
+      } else {
+        doubleWithRightChild( t );
+      }
+    }
+    t->height = max( height( t->left ), height( t->right ) ) + 1;
+  }
+}
+```
+
+### Single Rotation left-left
+```cpp
+/**
+ * Rotate binary tree node with left child.
+ * For AVL trees, this is a single rotation for case 1.
+ * Update heights, then set new root.
+ */
+void rotateWithLeftChild( AvlNode * & k2 ) {
+  AvlNode *k1 = k2->left;
+  k2->left = k1->right;
+  k1->right = k2;
+  k2->height = max( height( k2->left ), height( k2->right ) ) + 1;
+  k1->height = max( height( k1->left ), k2->height ) + 1;
+  k2 = k1;
+}
+```
+
+### Double Rotation left-right
+```cpp
+/**
+* Double rotate binary tree node: first left child
+* with its right child; then node k3 with new left child.
+* For AVL trees, this is a double rotation for case 2.
+* Update heights, then set new root.
+*/
+void doubleWithLeftChild( AvlNode * & k3 ) {
+  rotateWithRightChild( k3->left );
+  rotateWithLeftChild( k3 );
+}
+```
+
+### Delete method
+```cpp
+/**
+* Internal method to remove from a subtree.
+* x is the item to remove.
+* t is the node that roots the subtree.
+* Set the new root of the subtree.
+*/
+void remove( const Comparable & x, AvlNode * & t ) {
+  if(t == nullptr )
+  return;   // Item not found; do nothing
+
+
+  if( x < t->element) {
+    remove( x, t->left );
+  } else if( x > t->element ) {
+    remove( x, t->right );
+  } else if( t->left != nullptr && t->right != nullptr ) { // Two children 
+    t->element = findMin( t->right )->element;
+    remove( t->element, t->right );
+  } else {
+    AvlNode *oldNode = t;
+    t = ( t->left != nullptr ) ? t->left : t->right;
+    delete oldNode;
+  }
+
+  balance( t );
+ }
+
+```
