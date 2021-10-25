@@ -15,6 +15,8 @@
   - [AVL Trees](#avl-trees)
     - [All the possible cases where there is an imbalance.](#all-the-possible-cases-where-there-is-an-imbalance)
     - [AVL Tree Big-O](#avl-tree-big-o)
+    - [Balance Factor](#balance-factor)
+      - [What is a balance factor?](#what-is-a-balance-factor)
 
 
 # Part 3: Trees
@@ -195,3 +197,9 @@ $\therefore \: N(b) =$ `fib(n)` $- 1$
 `fib` $(n) = O(\phi^n)$\
 $\therefore \: N(h) = O(\phi^h )$\
 $h = O(log(N(h)) = O(log(n))$
+
+<hr>
+
+### Balance Factor
+#### What is a balance factor?
+The difference in height between the left and right subtrees can never be more than - **Balance Factor** =  height(rst) - height(lst)
