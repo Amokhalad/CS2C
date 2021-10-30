@@ -29,15 +29,15 @@
   - [4.4 AVL Trees](#44-avl-trees)
     - [Single Rotation](#single-rotation)
     - [Double Rotation](#double-rotation)
-  - [Summary](#summary)
-  - [Implementations:](#implementations)
-    - [Node Decleration for AVL Trees](#node-decleration-for-avl-trees)
-    - [Function to compute height of an AVL node](#function-to-compute-height-of-an-avl-node)
-    - [Insert into AVL tree method](#insert-into-avl-tree-method)
-    - [balance method](#balance-method)
-    - [Single Rotation left-left](#single-rotation-left-left)
-    - [Double Rotation left-right](#double-rotation-left-right)
-    - [Delete method](#delete-method)
+    - [Summary](#summary)
+    - [Implementations:](#implementations)
+      - [Node Decleration for AVL Trees](#node-decleration-for-avl-trees)
+      - [Function to compute height of an AVL node](#function-to-compute-height-of-an-avl-node)
+      - [Insert into AVL tree method](#insert-into-avl-tree-method)
+      - [balance method](#balance-method)
+      - [Single Rotation left-left](#single-rotation-left-left)
+      - [Double Rotation left-right](#double-rotation-left-right)
+      - [Delete method](#delete-method)
 
 
 # Chapter 3: Lists, Stacks, and Queues
@@ -360,12 +360,12 @@ The fact that subtree Y has an item inserted into it guarantees that it is nonem
       - ![](img/2021-10-23-14-33-05.png)  
       - ![](img/2021-10-23-14-33-20.png)
 
-## Summary
+### Summary
 To insert a new node with item $X$ into an AVL tree $T$, we recursively inert $X$ into the appropriate subtree of $T$ (let us cal this $T_{LR}$). if the height of $T_{LR}$ does not change, then we are done. Otherwise, if a height imbalance apprears in $T$, we do the appropriate single or double rotation depending on $X$ and the items in $T$ and $T_{LR}$, update the heights, and we are done.
 
 
-## Implementations:
-### Node Decleration for AVL Trees
+### Implementations:
+#### Node Decleration for AVL Trees
 ```cpp
 struct AvlNode {
 Comparable element;
@@ -381,7 +381,7 @@ AvlNode( const Comparable & ele, AvlNode *lt, AvlNode *rt, int h = 0 )
  };
 ```
 
-### Function to compute height of an AVL node
+#### Function to compute height of an AVL node
 ```cpp
  /**
  * Return the height of node t or -1 if nullptr. 3 */
@@ -391,7 +391,7 @@ AvlNode( const Comparable & ele, AvlNode *lt, AvlNode *rt, int h = 0 )
  }
 ```
 
-### Insert into AVL tree method
+#### Insert into AVL tree method
 ```cpp
  /**
  * Internal method to insert into a subtree.
@@ -411,7 +411,7 @@ AvlNode( const Comparable & ele, AvlNode *lt, AvlNode *rt, int h = 0 )
   }
 ```
 
-### balance method
+#### balance method
 ```cpp
 static const int ALLOWED_IMBALANCE = 1;
 // Assume t is balanced or within one of being balanced
@@ -438,7 +438,7 @@ void balance( AvlNode * & t ) {
 }
 ```
 
-### Single Rotation left-left
+#### Single Rotation left-left
 ```cpp
 /**
  * Rotate binary tree node with left child.
@@ -455,7 +455,7 @@ void rotateWithLeftChild( AvlNode * & k2 ) {
 }
 ```
 
-### Double Rotation left-right
+#### Double Rotation left-right
 ```cpp
 /**
 * Double rotate binary tree node: first left child
@@ -469,7 +469,7 @@ void doubleWithLeftChild( AvlNode * & k3 ) {
 }
 ```
 
-### Delete method
+#### Delete method
 ```cpp
 /**
 * Internal method to remove from a subtree.
