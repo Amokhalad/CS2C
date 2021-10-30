@@ -202,4 +202,8 @@ $h = O(log(N(h)) = O(log(n))$
 
 ### Balance Factor
 #### What is a balance factor?
-The difference in height between the left and right subtrees can never be more than - **Balance Factor** =  height(rst) - height(lst)
+The difference in height between the left and right subtrees can never be more than 1 or less than -1/
+- **Balance Factor** =  height(rst) - height(lst)
+- if I add to my height, that's when I update the balance factor
+- I don't want to change the balance factor if the height doesn't change
+
