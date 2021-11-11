@@ -497,5 +497,26 @@ void remove( const Comparable & x, AvlNode * & t ) {
 
   balance( t );
  }
-
 ```
+
+# Chapter 5: Hashing
+## 5.1 General Idea
+- hashing is a technique used for performing insertions, deletions, and finds in constant average time.
+- The mapping is called a **hash function**, and should ensure that any two distinct keys get different cells.
+- a **collision** is when two keys hash to the same value
+
+## 5.2 Hash Function
+- it is often a good idea to ensure that the table size is prime.
+- Fig 5.3 distrubites evenly if the input key is random, however, english is not random. Therefore this hash function is not approtiate if the hash table is reasonably large.
+- Fig 5.4 is a good hash function and it uses horners rule to compute a polynomial function of 37
+  - The issue is that this function would take a long time to compute if key is large. Therefore, some programmers implement their hash functions using only the characters in the odd spaces, or if the key is a street address, they might take some characters from the city name, zipcode and street address instead of the entire key
+
+
+## 5.3 Separate Chaining
+- the strat is to keep a `std::list` of all elements that hash to the same value.
+- ![](img/2021-11-08-19-37-58.png)
+- to preform a **search**, we use the hash function to determine which list to traverse
+- to preform an **insert**, we check the approriate list to see whether the elemt is already in place, (if duplicates exist, usually an extra data member is usually kept and that is incremented in the event of a match). If the element is new, it can be insereted at the front of the list.
+
+
+
