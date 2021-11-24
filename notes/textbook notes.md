@@ -519,4 +519,11 @@ void remove( const Comparable & x, AvlNode * & t ) {
 - to preform an **insert**, we check the approriate list to see whether the elemt is already in place, (if duplicates exist, usually an extra data member is usually kept and that is incremented in the event of a match). If the element is new, it can be insereted at the front of the list.
 
 
+# Chapter 6 Priority Queues (Heaps)
+similar to a queue data structure, a priority que process the thing of most importance first.
 
+## 6.1 Model
+- A Priority Queue is a data structure that allows at least the following two operations, insert and deleteMin. `deleteMin` is the priority queue equivalent of the queue's `dequeue` operation.
+![](img/2021-11-18-12-38-05.png)
+  
+## 6.2 Simple Implementations

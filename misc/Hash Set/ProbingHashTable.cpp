@@ -32,7 +32,7 @@ class ProbingHashTable {
                 return false;
             }
         }
-        (*buckets)[bucket_index].key_ = key;
+        (*buckets)[bucket_indaex].key_ = key;
         (*buckets)[bucket_index].value_ = value;
         (*buckets)[bucket_index].empty = false;
         return true;
