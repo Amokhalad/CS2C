@@ -24,6 +24,8 @@
   - [Merge Sort Idea](#merge-sort-idea)
     - [Merging](#merging)
       - [Big O](#big-o)
+      - [Down side of merge step:](#down-side-of-merge-step)
+      - [uses of merge sort](#uses-of-merge-sort)
 
 
 # Part 3: Trees

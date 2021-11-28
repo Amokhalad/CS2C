@@ -38,6 +38,18 @@
       - [Single Rotation left-left](#single-rotation-left-left)
       - [Double Rotation left-right](#double-rotation-left-right)
       - [Delete method](#delete-method)
+- [Chapter 5: Hashing](#chapter-5-hashing)
+  - [5.1 General Idea](#51-general-idea)
+  - [5.2 Hash Function](#52-hash-function)
+  - [5.3 Separate Chaining](#53-separate-chaining)
+- [Chapter 6 Priority Queues (Heaps)](#chapter-6-priority-queues-heaps)
+  - [6.1 Model](#61-model)
+- [Chapter 7: Sorting](#chapter-7-sorting)
+  - [7.5 Heapsort](#75-heapsort)
+    - [Implementation](#implementation-1)
+  - [7.6 Mergesort](#76-mergesort)
+    - [Implementation](#implementation-2)
+- [Graphs:](#graphs)
 
 
 # Chapter 3: Lists, Stacks, and Queues
@@ -526,4 +538,127 @@ similar to a queue data structure, a priority que process the thing of most impo
 - A Priority Queue is a data structure that allows at least the following two operations, insert and deleteMin. `deleteMin` is the priority queue equivalent of the queue's `dequeue` operation.
 ![](img/2021-11-18-12-38-05.png)
   
-## 6.2 Simple Implementations
+
+
+# Chapter 7: Sorting
+## 7.5 Heapsort
+- priority queues can be used to sort in $\mathcal O(NlogN)$
+  - we need to build a binary heap of $N$ elements. – This takes $\mathcal O(N)$
+  - we then perform $N$ `deleteMax` operations. The elements leave the heap max first, so we record these elements in a second array, we sort $N$ elements.
+    -  Each `deleteMax` takes $\mathcal O(logN)$ time, so the total running time is $\mathcal O(NlogN)$
+ - a problem with this algorithm is we we create another array, so now the memory required is doubled.
+ - a clever way around to not use a second array is to make us of the fact that everytime you call `deleteMax`, the heap shrinks by 1. So you can just place the deleteMax element at the end of the heap. The next deleted elment will go in the second to last position, and so on.
+
+### Implementation
+```cpp
+
+/**
+ * Internal method for heapsort.
+ * i is the index of an item in the heap.
+ * Returns the index of the left child.
+ */
+inline int leftChild( int i ) {
+  return 2 * i + 1;
+}
+
+
+/**
+ * Standard heapsort.
+ */
+template <typename Comparable>
+void heapsort( vector<Comparable> & a )
+  for(int i = a.size() / 2 - 1; i >= 0; --i) {/*buildHeap*/ 
+    percDown( a, i, a.size( ) );        
+  } 
+  for(intj = a.size() - 1; j > 0 ; --j) {     /*deleteMax*/
+      std::swap( a[ 0 ], a[ j ] );      
+      percDown( a, 0, j );
+  }
+}
+
+
+/**
+ * Internal method for heapsort that is used in deleteMax and buildHeap.
+ * i is the position from which to percolate down.
+ * n is the logical size of the binary heap.
+ */
+template <typename Comparable>
+void percDown( vector<Comparable> & a, int i, int n ) {
+  int child;
+  Comparable tmp;
+  
+  for( tmp = std::move( a[i] ); leftChild( i ) < n; i = child ) {
+    child = leftChild( i );
+    if ( child != n - 1 && a[ child ] < a[ child + 1] )
+      ++child;
+    if (tmp < a[ child ])
+      a [ i ] = std::move( a[ child ]);
+    else 
+      break;
+  }
+  a[ i ] = std::move( tmp ); 
+}
+```
+<hr>
+
+## 7.6 Mergesort
+- Mergesort runs in $\mathcal O(NlogN)$ worst-case running time, and the number of comparisons used is nearly optimal.
+- The basic merging algorithm takes two sorted input arrays A and B, then outputs array C, and three counters, `Actr,` `Bctr`, `Cctr`, which are initially set to the beginning of their respective arrays.
+- the smaller of `A[Actr]` and `B[Bctr]`is copied to the next entry in C, and the appropriate counters are advanced.
+here is an example:\
+
+<img src="img/2021-11-24-20-07-33.png" style="width: 500px">
+
+- **Mergesort Algorithm:**
+  - if $N$ = 1, the list is already sorted since there is just 1 element.
+  - Otherwise, recursively mergesort the firsthalf and the second half. This gives two sorted halves, which can then be merged together using the mergin algorithm described above.
+  - This algorithm is a classic *divide-and-conquer* strategy – The problem is *divided* intosmaller problems and solved recursively.
+  - The *conquering phase consit of patching together the answers.
+
+### Implementation
+
+```cpp
+/**
+* Mergesort algorithm (driver).
+*/
+template <typename Comparable>
+void mergeSort( vector<Comparable> & a ) {
+  vector<Comparable> tmpArray( a.size( ) );
+  
+  mergeSort( a, tmpArray, 0, a.size( ) - 1 );
+}
+
+
+ /**
+ * Internal method that makes recursive calls.
+ * a is an array of Comparable items.
+ * tmpArray is an array to place the merged result.
+ * left is the left-most index of the subarray.
+ * right is the right-most index of the subarray.
+ */
+
+ template <typename Comparable>
+ void mergeSort( vector<Comparable> & a,
+                  vector<Comparable> & tmpArray, int left, int right )
+{
+  if( left < right ) {
+  int center = ( left + right ) / 2;
+  mergeSort( a, tmpArray, left, center );
+  mergeSort( a, tmpArray, center + 1, right );
+  merge( a, tmpArray, left, center + 1, right );
+  }
+}
+```
+
+# Graphs:
+- a directed graph is a one way edge from node u to v
+- an undirected graph is a two way edge from node u to v.
+- a mixed graph has both undirected and directed edges.
+- two vertices are said to be **adjacent** if there is an edge whose end vertices are *u* and *v*.
+- an edge is said to be **incident** on a vertex if the vertex is one of the edge's endpoints.
+- the degree of vertex v, denoted $deg(v)$ is the number of incident edges of v.
+- an edge that connects a vertex to itself is called a self-loop
+  - a graph that does not contain self-loops or parallel edges is said to be a **simple graph**
+  - For a simple graph, we can say that the edges are a set of vertex pairs (and not just a collection)
+
+<img src="img/2021-11-25-15-40-43.png" style="width: 500px">
