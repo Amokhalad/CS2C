@@ -50,6 +50,12 @@
   - [7.6 Mergesort](#76-mergesort)
     - [Implementation](#implementation-2)
 - [Graphs:](#graphs)
+  - [9.3 Shortest-Path Algorithms](#93-shortest-path-algorithms)
+    - [Unweighted Graphs](#unweighted-graphs)
+      - [Implementation (Pseudocode):](#implementation-pseudocode)
+      - [Implemenntation (Pseudocode, using queue)](#implemenntation-pseudocode-using-queue)
+    - [Dijkstra's Algorithm](#dijkstras-algorithm)
+      - [Implementation (Psuedocode)](#implementation-psuedocode)
 
 
 # Chapter 3: Lists, Stacks, and Queues
@@ -664,3 +670,100 @@ void mergeSort( vector<Comparable> & a ) {
 <img src="img/2021-11-25-15-40-43.png" style="width: 600px">
 <img src="img/2021-11-25-15-42-08.png" style="width: 600px">
 
+<hr>
+
+## 9.3 Shortest-Path Algorithms
+
+### Unweighted Graphs 
+**Breadth-first search** operates by processing vertices in layers. The vertices closest to the start are evaluated first, and then most distant vertices are evaluated last.
+- For each vertex, we will keep track of three pieces of information
+1) keep it's distance from s in the entry $d_v$. Initially all vertices are unreachable except for s, whose path length is 0. 
+2) The entry $p_v$ is the bookkeeping variable, which will allow us to print the actual paths. 
+3) The entry *known* is set to `true` after a vertex is processed. Initially all entries are not *known*, including the start vertex. When a vertex is marked *known*, we have a guarantee that no cheaper path will ever be found, so processing for that vertex is essentially complete.
+
+#### Implementation (Pseudocode):
+```cpp
+void Graph::unweighted( Vertex s ) { // s is the start vertex
+  for each Vertex v {
+      v.dist = INFINITY;
+      v.known = false;
+  }
+
+  s.dist = 0;
+  
+  for ( int currDist = 0; currDist < NUM_VERTICES; ++currDist ) {
+    for each Vertex v {
+      if ( !v.known && v.dist == currDist) {
+        v.known = true;
+        for each Vertex w adjacent to v {
+          if ( w.dist == INFINITY ) {
+            w.dist = currDist + 1;
+            w.path = v;
+          }
+        }
+      }
+    }
+  }
+  
+} 
+
+```
+<hr> 
+
+- The running time of the algorithm is $\mathcal O(|V|^2)$, because of the doubly nested for loops.  
+- An obvious inefficenty is that the outside loop contunies until `NUM_VERTICES - 1`, even if all the vertices become *known* much earlier. An extra test could made to avoid this, but it does not affect the worst-case running time.
+
+#### Implemenntation (Pseudocode, using queue)
+```cpp
+void Graph::unweighted( Vertex s ) {
+  Queue<Vertex> q;
+  
+  for each Vertex v
+    v.dist = INFINITY;
+  
+  s.dist = 0;
+  q.enqueue( s );
+
+  while ( !q.isEmpty() ) {
+    Vertex v = q.dequeue();
+
+    for each Vertex w adjacent to v
+      if ( w.dist == INFINITY ) {
+        w.dist = v.dist + 1;
+        w.path = v;
+        q.enqueue( w );
+      }
+  } 
+}
+```
+<hr>
+
+### Dijkstra's Algorithm
+- if the graph is weighted the problem (apparently) becoes harder, but we can still use the ideas from the unweighted case.
+- We keep all of the sameinformation as before – each vertex is marked as either *known* or *unknown*. A tentative distance $d_v$ is kept for each vertex, as before. This distance turns out to be the shortest path length from *s* to *v* using only *known* vertices, as before. As before, we record $p_v$, which is the last vertex to cause a change to $d_v$.
+- **Dijkstra's Algorithm** is an example of a **greedy algorithm.**
+  - Greedy algorithm generally solve a problem in stages by doing what appears to be the best thing at each stage.
+  
+  - The update operation is known as a relaxtion procedure, because it takes an old estimate and checks if it can be improved to get closer to its true value.
+
+**Edge Relaxtion:**
+$$
+\text{if}\; D[u] + w((u, z)) < D[z] \;\bold{\text{then}}\\
+D[z] \leftarrow D[u] + w((u,z))
+$$
+
+#### Implementation (Psuedocode)
+```ruby
+Algorithm ShortestPath( G, v):
+  /*
+  Input: A simple undirected weighted graph G with nonnegative edge weights and a distinguished vertex v of G.
+
+  Output: a label D[u], for each vertex u of G, such that D[u] is the length of a shortest path from v to u in G
+  */
+
+  Initialize D[v] <- to 0 and D[u] <- +∞ for each vertex u ≠ v.
+  Let a priority queue Q contain all the vertices of G using the D labels as keys.
+  
+  While Q is not empty do
+  
+```
