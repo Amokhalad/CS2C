@@ -752,8 +752,10 @@ $$
 D[z] \leftarrow D[u] + w((u,z))
 $$
 
+**Proposition:* * *in Dijkstra's algorith, whenever a vertex u is pulled into the cloud, the label D[u] is equal to d(v.u), the length of a shortest path from v to u.*
+
 #### Implementation (Psuedocode)
-```ruby
+```md
 Algorithm ShortestPath( G, v):
   /*
   Input: A simple undirected weighted graph G with nonnegative edge weights and a distinguished vertex v of G.
@@ -764,6 +766,17 @@ Algorithm ShortestPath( G, v):
   Initialize D[v] <- to 0 and D[u] <- +∞ for each vertex u ≠ v.
   Let a priority queue Q contain all the vertices of G using the D labels as keys.
   
-  While Q is not empty do
+  While Q.isnotempty() {
+    pull a new vertex u into the cloud
+    u <- Q.removeMin()
+    
+    for each vertex z adjacent to u such that z is in Q {
+      {preform the relaxation procedure on edge (u, z)}
+      if D[u] + w((u,z)) < D[z] {
+        D[z] <- D[u] + w((u,z))
+        change to D[z] the key of vertez z in Q.
+      }
+  }
+  return the label D[u] of each vertex u.
   
 ```
