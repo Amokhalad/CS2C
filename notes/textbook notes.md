@@ -664,6 +664,7 @@ void mergeSort( vector<Comparable> & a ) {
   - a graph that does not contain self-loops or parallel edges is said to be a **simple graph**
   - For a simple graph, we can say that the edges are a set of vertex pairs (and not just a collection)
 
+<<<<<<< HEAD
 <img src="img/2021-11-25-15-40-43.png" style="width: 500px">
 
 ### Graph Traversal
@@ -734,3 +735,8 @@ void Digraph<max_size>::breadth_first(void (*visit)(Vertex &)) const {
   }
 }
 ```
+=======
+<img src="img/2021-11-25-15-40-43.png" style="width: 600px">
+<img src="img/2021-11-25-15-42-08.png" style="width: 600px">
+
+>>>>>>> 01e62a4aee3f46b68758f36711018e9d8f220126
