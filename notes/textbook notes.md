@@ -50,6 +50,9 @@
   - [7.6 Mergesort](#76-mergesort)
     - [Implementation](#implementation-2)
 - [Graphs:](#graphs)
+    - [Graph Traversal](#graph-traversal)
+      - [Depth-first Algorithm](#depth-first-algorithm)
+      - [Breadith-First Algorithm](#breadith-first-algorithm)
 
 
 # Chapter 3: Lists, Stacks, and Queues
@@ -662,3 +665,72 @@ void mergeSort( vector<Comparable> & a ) {
   - For a simple graph, we can say that the edges are a set of vertex pairs (and not just a collection)
 
 <img src="img/2021-11-25-15-40-43.png" style="width: 500px">
+
+### Graph Traversal
+**Depth-first traversal**
+- In a tree the starting node is always the root. In a graph, there is no special node that we start traversing from. Often times it's arbitrary
+- Suppose that the traversal has just visted a vertex *v*, and let $w_1, w_2, w_3$ be the verticies adjacent to v. Then we shall next visit $w_1$ and keep $w_2,...,w_3$ waiting.
+- After visiting $w_1$, we traverse all the verticies to whichit is adjacent before returning to traverse $w_2,...,w_3$
+
+**Breadth-first traversal**
+- if the traversal has started at vertex *v*, it then visista *all* the verticies adjacent to *v*, putting the vertices adjacent to these in a waiting list to be traversed afterafter all verticies adjacent to v have been visited.
+
+![](img/2021-12-02-20-18-37.png)
+
+#### Depth-first Algorithm
+```cpp
+template <int max_size>
+void Digraph<max_size>::depth_first(void(*visted)(Vertex &)) const {
+  /* Post: The function *visit has been performed at each vertex of the Digraph in depth-first order
+
+    Uses: Method traverse to produce the recursive depth-first order.
+  */
+ bool visted[max_size];
+ Vertex v;
+ for (all v in G) visted[v] = falsel;
+ for (all v in G) if(!visted[v])
+    traverse(v, visited, visit);
+}
+```
+the recusrion is performed in an auxiliary function **traverse**. Since **traverse** needs access to the ineteral structure of a graph, it should be a memeber function of the class Digraph. Moreover, since it's just a helper function used in **depth_first**, it should be private to the class Digraph.
+
+```cpp
+template <int max_size>
+void Digraph<max_size>::traverse(Vertex & w, bool visted[], void(*visted)(Vertex &)) const {
+  Vertex w;
+  visited[v] = true;
+  (*visit)(v);
+  for (all w adjacent to v)
+    if (!visited[w]) {
+      traverse(w, visited, visit);
+    }
+}
+```
+
+#### Breadith-First Algorithm
+```cpp
+template<int max_size>
+void Digraph<max_size>::breadth_first(void (*visit)(Vertex &)) const {
+  /* Post: the function *visit has been performed at each vertex of the Digraph in breadth-first order
+     Uses: methods of class Queue.
+  */
+ Queue q;
+ bool visited[max_size];
+ Vertex v, w, x;
+ for (all v in G) visited[v] = false;
+ for (all v in G)
+  if (!visited[v]) {
+    q.append(v);
+    while(!q.empty()) {
+      q.retrieve(w);
+      if(!visited[w]) {
+        visited[w] = true;
+        (*visit)(w);
+        for (all x adjacent to w)
+          q.append(x);
+      }
+      q.serve();
+    }
+  }
+}
+```

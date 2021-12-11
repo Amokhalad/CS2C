@@ -123,6 +123,10 @@ ipch/
 *.opendb
 *.opensdf
 *.sdf
+*.cmake
+*.exe
+*
+*.jsonD
 *.cachefile
 *.VC.db
 *.VC.VC.opendb
